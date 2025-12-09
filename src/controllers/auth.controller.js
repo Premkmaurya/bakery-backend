@@ -3,11 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const userRegister = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   try {
-    const existingUser = await userModel.findOne({
-      $or: [{ email }, { username }],
-    });
+    const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -31,9 +29,12 @@ const userRegister = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
-    res
-      .status(201)
-      .json({ message: "User registered successfully", user: newUser });
+    res.status(201).json({
+      message: "User registered successfully",
+      email: newUser.email,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -42,8 +43,12 @@ const userRegister = async (req, res) => {
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await userModel.findOne({ email, password });
+    const user = await userModel.findOne({ email });
     if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const decoded = bcrypt.compare(password, user.password);
+    if (!decoded) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
     const token = jwt.sign(
@@ -56,7 +61,12 @@ const userLogin = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
-    res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({
+      message: "Login successful",
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
