@@ -1,6 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const orderController = require("../controllers/order.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
 
-const paymentController = require('../controllers/payment.controller');
+router.get(
+    "/getOrders", 
+    authMiddleware, 
+    orderController.getOrders
+);
+router.post(
+    "/createOrder", 
+    authMiddleware, 
+    orderController.createOrder
+);
+router.patch(
+  "/updateOrderStatus/:orderId",
+  authMiddleware,
+  orderController.updateOrderStatus
+);
 
-router.get("")
+module.exports = router;

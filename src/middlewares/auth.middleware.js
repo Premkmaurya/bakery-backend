@@ -1,7 +1,7 @@
 const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
-async function authUserMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   try {
     const token =
       req.cookies?.token || req.headers?.authorization?.split(" ")[1];
@@ -23,4 +23,4 @@ async function authUserMiddleware(req, res, next) {
       .json({ message: "Authentication failed", error: error.message });
   }
 }
-module.exports = authUserMiddleware;
+module.exports = authMiddleware;
