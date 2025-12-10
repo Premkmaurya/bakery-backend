@@ -72,7 +72,44 @@ const userLogin = async (req, res) => {
   }
 };
 
+const googleAuthCallback = async (req, res) => {
+  const user = req.user;
+
+  const isUserExists = await userModel.findOne({ 
+    $or: [ { googleId: user.id }, { email: user.emails[0].value } ]
+  });
+  if (!isUserExists) {
+    const newUser = new userModel({
+      googleId: user.id,
+      firstName: user.name.givenName,
+      lastName: user.name.familyName,
+      email: user.emails[0].value,
+    });
+    await newUser.save();
+    userData = newUser;
+  } else {
+    userData = isUserExists;
+  }
+  const token = jwt.sign(
+    { id: userData._id, email: userData.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  });
+  res.status(200).json({
+    message: "Google authentication successful",
+    email: userData.email,
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+  });
+};
+
 module.exports = {
   userRegister,
   userLogin,
+  googleAuthCallback,
 };

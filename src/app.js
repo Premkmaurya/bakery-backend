@@ -1,28 +1,39 @@
-const express = require('express');
+const express = require("express");
+const passport = require("passport");
+const { Strategy: GoogleStrategy } = require("passport-google-oauth20");
 
+const authRoutes = require("./routes/auth.routes");
+const productRoutes = require("./routes/product.routes");
+const orderRoutes = require("./routes/order.routes");
+const cartRoutes = require("./routes/cart.routes");
+const reviewsRoutes = require("./routes/reviews.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
 
-
-const authRoutes = require('./routes/auth.routes');
-const productRoutes = require('./routes/product.routes');
-const orderRoutes = require('./routes/order.routes');
-const cartRoutes = require('./routes/cart.routes');
-const reviewsRoutes = require('./routes/reviews.routes');
-const wishlistRoutes = require('./routes/wishlist.routes');
-
-
-const cookiesParser = require('cookie-parser');
+const cookiesParser = require("cookie-parser");
 const app = express();
-
 
 app.use(express.json());
 app.use(cookiesParser());
+app.use(passport.initialize());
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+    },
+    (accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
+    }
+  )
+);
 
 
-app.use('/auth', authRoutes);
-app.use('/products', productRoutes);
-app.use('/reviews', reviewsRoutes);
-app.use('/orders', orderRoutes);
-app.use('/cart', cartRoutes);
-app.use('/wishlist', wishlistRoutes);
+app.use("/auth", authRoutes);
+app.use("/products", productRoutes);
+app.use("/reviews", reviewsRoutes);
+app.use("/orders", orderRoutes);
+app.use("/cart", cartRoutes);
+app.use("/wishlist", wishlistRoutes);
 
 module.exports = app;
