@@ -5,7 +5,8 @@ const passport = require('passport');
 
 router.post("/register",authController.userRegister)
 router.post("/login",authController.userLogin)
-
+router.post("/logout",authController.userLogout)
+router.get("/verify",authController.verifyUser)
 
 router.get(
   "/google",

@@ -72,6 +72,31 @@ const userLogin = async (req, res) => {
   }
 };
 
+const userLogout = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  });
+  res.status(200).json({ message: "Logout successful" });
+}
+
+const verifyUser = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await userModel.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 const googleAuthCallback = async (req, res) => {
   try {
     const user = req.user;
@@ -114,5 +139,7 @@ const googleAuthCallback = async (req, res) => {
 module.exports = {
   userRegister,
   userLogin,
+  userLogout,
+  verifyUser,
   googleAuthCallback,
 };

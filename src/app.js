@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const passport = require("passport");
 const { Strategy: GoogleStrategy } = require("passport-google-oauth20");
 
@@ -14,6 +15,13 @@ const app = express();
 
 app.use(express.json());
 app.use(cookiesParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
 app.use(passport.initialize());
 passport.use(
   new GoogleStrategy(
