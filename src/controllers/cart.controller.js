@@ -15,7 +15,8 @@ async function getCart(req, res) {
 async function addToCart(req, res) {
   try {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
+    const { productId } = req.params;
+    const { quantity } = req.body;
     let cart = await cartModel.findOne({ userId });
     if (!cart) {
       cart = new cartModel({ userId, items: [] });

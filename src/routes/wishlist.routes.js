@@ -6,7 +6,7 @@ const wishlistController = require("../controllers/wishlist.controller");
 router.get("/getWishlist", authMiddleware, wishlistController.getWishlist);
 
 router.post(
-  "/addToWishlist/:productId",
+  "/addToWishlist",
   authMiddleware,
   wishlistController.addToWishlist
 );

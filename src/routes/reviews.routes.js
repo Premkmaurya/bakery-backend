@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const authUserMiddleware = require("../middlewares/auth.user.middleware");
+const authMiddleware = require("../middlewares/auth.middleware");
 const reviewsController = require("../controllers/reviews.controller");
 
-router.get("/get", authUserMiddleware, reviewsController.getReviews);
+router.get("/get", reviewsController.getReviews);
 
 router.post(
   "/create",
-  authUserMiddleware,
+  authMiddleware,
   reviewsController.createReview
 );
 

@@ -1,11 +1,11 @@
-const reviewModel = require("../models/review.model");
+const reviewModel = require("../models/reviews.model");
 
 async function createReview(req, res) {
   try {
     const { productId, rating, comment } = req.body;
     const newReview = new reviewModel({
       productId,
-      userId: req.user._id,
+      userId: req.user.id,
       rating,
       comment,
     });

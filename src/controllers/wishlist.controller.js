@@ -13,7 +13,7 @@ async function getWishlist(req, res) {
 
 async function addToWishlist(req, res) {
   try {
-    const { productId } = req.params;
+    const { productId } = req.body;
     let wishlist = await wishlistModel.findOne({ userId: req.user.id });
     if (!wishlist) {
         wishlist = new wishlistModel({ userId: req.user.id, products: [] });

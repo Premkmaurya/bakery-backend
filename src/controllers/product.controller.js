@@ -1,4 +1,7 @@
 const productModel = require("../models/product.model");
+const uploadImage = require("../services/storage.service");
+const { v4: uuidv4 } = require("uuid");
+
 
 async function getProducts(req, res) {
   try {
@@ -16,11 +19,16 @@ async function createProduct(req, res) {
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
-    const { name, price, description, inStock } = req.body;
+    const image = req.file;
+    const { name, price, description, category, inStock } = req.body;
+    const result = await uploadImage(image.buffer, `${uuidv4()}`);
+
     const newProduct = new productModel({
       name,
       price,
       description,
+      category,
+      imageUrl: result.url,
       inStock,
     });
     await newProduct.save();
@@ -41,8 +49,14 @@ async function updateProduct(req, res) {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
     const { id } = req.params;
-    const { name, price, description, inStock } = req.body;
-    const updates = { name, price, description, inStock };
+    const image = req.file;
+    let imageUrl;
+    if (image) {
+      const result = await uploadImage(image.buffer, `${uuidv4()}`);
+      imageUrl = result.url;
+    }
+    const { name, price, description, category, inStock } = req.body;
+    const updates = { name, price, description, category, inStock ,imageUrl};
     const updatedProduct = await productModel.findByIdAndUpdate(id, updates, {
       new: true,
     });
