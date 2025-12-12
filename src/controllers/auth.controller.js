@@ -125,45 +125,13 @@ const googleAuthCallback = async (req, res) => {
     });
     res.redirect("http://localhost:5173");
   } catch (error) {
-    console.log("google auth failed,", error);
     return res
       .status(500)
       .json({ message: "Google authentication failed", error });
   }
 };
 
-const updateUserProfile = async (req, res) => {
-  try {
-    const avatar = req.file ? req.file.buffer : undefined;
-    if (avatar) {
-      const uploadResponse = await uploadImage(
-        avatar.toString("base64"),
-        uuidv4()
-      );
-      req.body.avatar = uploadResponse.url;
-    }
-    const { firstName, lastName, email, phone, gender } = req.body;
-    const userId = req.user.id;
-    const updatedUser = await userModel.findByIdAndUpdate(
-      userId,
-      { firstName, lastName, email, phone, gender, avatar },
-      { new: true }
-    );
-    res.status(200).json({
-      message: "Profile updated successfully",
-      user: {
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
-        email: updatedUser.email,
-        phone: updatedUser.phone,
-        gender: updatedUser.gender,
-        avatar: req.body.avatar,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
+
 
 module.exports = {
   userRegister,
@@ -171,5 +139,4 @@ module.exports = {
   userLogout,
   verifyUser,
   googleAuthCallback,
-  updateUserProfile,
 };

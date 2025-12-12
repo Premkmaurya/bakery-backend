@@ -12,12 +12,7 @@ router.post("/login", authController.userLogin);
 router.post("/logout", authController.userLogout);
 router.get("/verify", authMiddleware, authController.verifyUser);
 
-router.post(
-  "/update-profile",
-  authMiddleware,
-  upload.single("avatar"),
-  authController.updateUserProfile
-);
+
 
 router.get(
   "/google",
