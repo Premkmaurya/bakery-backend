@@ -1,6 +1,8 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const uploadImage = require("../services/storage.service");
+const {v4: uuidv4} = require("uuid");
 
 const userRegister = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -78,22 +80,14 @@ const userLogout = async (req, res) => {
     secure: process.env.NODE_ENV === "production",
   });
   res.status(200).json({ message: "Logout successful" });
-}
+};
 
 const verifyUser = async (req, res) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await userModel.findById(decoded.id).select("-password");
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+  const user = req.user;
+  if (user) {
+    res.status(200).json({ message: "User is authenticated", user });
+  } else {
+    res.status(401).json({ message: "User is not authenticated" });
   }
 };
 
@@ -132,7 +126,42 @@ const googleAuthCallback = async (req, res) => {
     res.redirect("http://localhost:5173");
   } catch (error) {
     console.log("google auth failed,", error);
-    return res.status(500).json({ message: "Google authentication failed", error });
+    return res
+      .status(500)
+      .json({ message: "Google authentication failed", error });
+  }
+};
+
+const updateUserProfile = async (req, res) => {
+  try {
+    const avatar = req.file ? req.file.buffer : undefined;
+    if (avatar) {
+      const uploadResponse = await uploadImage(
+        avatar.toString("base64"),
+        uuidv4()
+      );
+      req.body.avatar = uploadResponse.url;
+    }
+    const { firstName, lastName, email, phone, gender } = req.body;
+    const userId = req.user.id;
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, email, phone, gender, avatar },
+      { new: true }
+    );
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        gender: updatedUser.gender,
+        avatar: req.body.avatar,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
 };
 
@@ -142,4 +171,5 @@ module.exports = {
   userLogout,
   verifyUser,
   googleAuthCallback,
+  updateUserProfile,
 };

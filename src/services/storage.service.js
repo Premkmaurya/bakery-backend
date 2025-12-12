@@ -11,7 +11,7 @@ async function uploadImage(file, fileName) {
   const response = await imagekit.upload({
       file: file,
       fileName: fileName,
-      folder:"posts"
+      folder:"profiles"
     })
 
     return response;

@@ -1,12 +1,23 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authController = require('../controllers/auth.controller');
-const passport = require('passport');
+const authController = require("../controllers/auth.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
+const passport = require("passport");
+const multer = require("multer");
 
-router.post("/register",authController.userRegister)
-router.post("/login",authController.userLogin)
-router.post("/logout",authController.userLogout)
-router.get("/verify",authController.verifyUser)
+const upload = multer({storage: multer.memoryStorage()});
+
+router.post("/register", authController.userRegister);
+router.post("/login", authController.userLogin);
+router.post("/logout", authController.userLogout);
+router.get("/verify", authMiddleware, authController.verifyUser);
+
+router.post(
+  "/update-profile",
+  authMiddleware,
+  upload.single("avatar"),
+  authController.updateUserProfile
+);
 
 router.get(
   "/google",
@@ -19,6 +30,5 @@ router.get(
   passport.authenticate("google", { session: false }),
   authController.googleAuthCallback
 );
-
 
 module.exports = router;
