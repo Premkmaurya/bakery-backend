@@ -4,7 +4,7 @@ const orderController = require("../controllers/order.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
 router.get(
-    "/getOrders", 
+    "/get-orders", 
     authMiddleware, 
     orderController.getOrders
 );

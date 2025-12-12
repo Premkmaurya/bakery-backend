@@ -20,11 +20,13 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: [
-        "Popular-cakes",
-        "Celebration-cakes",
-        "Baby-cakes",
-        "Wedding-cakes",
-        "Special-cakes",
+        "Popular cakes",
+        "Celebration cakes",
+        "Baby cakes",
+        "Wedding cakes",
+        "Special cakes",
+        "Breads",
+        "Muffins",
       ],
     },
     imageUrl: {

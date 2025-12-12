@@ -26,5 +26,22 @@ router.post(
   userController.addAddress
 )
 
+router.patch(
+  "/update-address/:addressId",
+  authMiddleware,
+  userController.updateAddress
+)
+
+router.delete(
+  "/delete-address/:id",
+  authMiddleware,
+  userController.deleteAddress
+);
+
+router.patch(
+  "/update-password",
+  authMiddleware,
+  userController.updatePassword
+)
 
 module.exports = router;
