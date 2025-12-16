@@ -11,44 +11,35 @@ async function getWishlist(req, res) {
   }
 }
 
-async function addToWishlist(req, res) {
+async function toggleWishlist(req, res) {
   try {
     const { productId } = req.body;
+    console.log("Toggling wishlist for productId:", productId);
     let wishlist = await wishlistModel.findOne({ userId: req.user.id });
     if (!wishlist) {
-        wishlist = new wishlistModel({ userId: req.user.id, products: [] });
+      wishlist = new wishlistModel({ userId: req.user.id, products: [] });
     }
 
-    if (wishlist.products.some(item => item.productId.toString() === productId)) {
-      return res.status(400).json({ message: "Product already in wishlist" });
+    if (
+      wishlist.products.some((item) => item.productId.toString() === productId)
+    ) {
+      wishlist.products = wishlist.products.filter(
+        (item) => item.productId.toString() !== productId
+      );
+      await wishlist.save();
+      return res
+        .status(200)
+        .json({ message: "Product removed from wishlist", wishlist });
     }
     wishlist.products.push({ productId });
     await wishlist.save();
-    res.status(200).json(wishlist);
-    } catch (error) {
+    res.status(200).json({ message: "product added in wishlist", wishlist });
+  } catch (error) {
     throw new Error("Error adding to wishlist: " + error.message);
   }
 }
 
-async function removeFromWishlist(req, res) {
-    try {
-        const { productId } = req.params;
-        const wishlist = await wishlistModel.findOne({ userId: req.user.id });
-        if (!wishlist) {
-            return res.status(404).json({ message: "Wishlist not found" });
-        }
-        wishlist.products = wishlist.products.filter(
-            item => item.productId.toString() !== productId
-        );
-        await wishlist.save();
-        res.status(200).json(wishlist);
-    }
-    catch (error) {
-        throw new Error("Error removing from wishlist: " + error.message);
-    }
-}
 module.exports = {
   getWishlist,
-  addToWishlist,
-  removeFromWishlist,
+  toggleWishlist,
 };

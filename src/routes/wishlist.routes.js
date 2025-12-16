@@ -6,14 +6,10 @@ const wishlistController = require("../controllers/wishlist.controller");
 router.get("/getWishlist", authMiddleware, wishlistController.getWishlist);
 
 router.post(
-  "/addToWishlist",
+  "/toggleWishlist",
   authMiddleware,
-  wishlistController.addToWishlist
+  wishlistController.toggleWishlist
 );
-router.delete(
-  "/removeFromWishlist/:productId",
-  authMiddleware,
-  wishlistController.removeFromWishlist
-);
+
 
 module.exports = router;
