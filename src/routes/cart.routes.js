@@ -13,8 +13,15 @@ router.post(
     authMiddleware,
     cartController.addToCart
 );
+
+router.patch(
+    '/updateCart/:id',
+    authMiddleware,
+    cartController.updateCart
+)
+
 router.delete(
-    "/removeFromCart/:productId",
+    "/removeFromCart/:id",
     authMiddleware,
     cartController.removeFromCart
 );
