@@ -50,7 +50,7 @@ const getAddress = async (req, res) => {
 const addAddress = async (req, res) => {
   try {
     const userId = req.user.id;
-    const {fullName,phone,city,street,state,country,addressType,zip} = req.body;
+    const {fullName,phone,city,street,state,addressType,zip} = req.body;
     
     const user = await userModel.findById(userId);
     user.address.push({
@@ -59,7 +59,6 @@ const addAddress = async (req, res) => {
       city,
       street,
       state,
-      country,
       addressType,
       zip
     });
