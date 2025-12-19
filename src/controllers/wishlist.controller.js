@@ -13,7 +13,7 @@ async function getWishlist(req, res) {
 
 async function toggleWishlist(req, res) {
   try {
-    const { productId } = req.body;
+    const { productId } = req.params;
     console.log("Toggling wishlist for productId:", productId);
     let wishlist = await wishlistModel.findOne({ userId: req.user.id });
     if (!wishlist) {
