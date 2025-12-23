@@ -2,7 +2,6 @@ const productModel = require("../models/product.model");
 const uploadImage = require("../services/storage.service");
 const { v4: uuidv4 } = require("uuid");
 
-
 async function getProducts(req, res) {
   try {
     const products = await productModel.find({}).skip(0).limit(10);
@@ -11,6 +10,38 @@ async function getProducts(req, res) {
     res
       .status(500)
       .json({ message: "Error fetching products", error: error.message });
+  }
+}
+
+async function searchProducts(req, res) {
+  const { search, category, maxPrice } = req.query;
+  let filter = {};
+
+  // Search filter
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  // Category filter
+  if (category && category !== "All") {
+    filter.category = category;
+  }
+
+  // Price filter
+  if (maxPrice) {
+    filter.price = { $lte: Number(maxPrice) };
+  }
+
+  try {
+    const products = await productModel
+      .find(filter)
+      .sort({ createdAt: -1 });
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching products", error });
   }
 }
 
@@ -56,7 +87,7 @@ async function updateProduct(req, res) {
       imageUrl = result.url;
     }
     const { name, price, description, category, inStock } = req.body;
-    const updates = { name, price, description, category, inStock ,imageUrl};
+    const updates = { name, price, description, category, inStock, imageUrl };
     const updatedProduct = await productModel.findByIdAndUpdate(id, updates, {
       new: true,
     });
@@ -94,6 +125,7 @@ async function deleteProduct(req, res) {
 
 module.exports = {
   getProducts,
+  searchProducts,
   createProduct,
   updateProduct,
   deleteProduct,

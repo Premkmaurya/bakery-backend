@@ -9,6 +9,8 @@ const upload = multer({storage: multer.memoryStorage()})
 
 router.get("/get",productController.getProducts);
 
+router.get("/search",productController.searchProducts);
+
 router.post(
   "/create",
   authMiddleware,
