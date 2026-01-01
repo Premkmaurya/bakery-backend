@@ -27,13 +27,13 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "customer"],
       default: "customer",
     },
-    gender:{
+    gender: {
       type: String,
     },
-    phone:{
+    phone: {
       type: String,
     },
-    avatar:{
+    avatar: {
       type: String,
     },
     address: [
@@ -42,11 +42,9 @@ const userSchema = new mongoose.Schema(
         phone: { type: String },
         street: { type: String },
         city: { type: String },
-        state: { type: String },
-        zip: { type: String },
-        addressType: { type: String }
-      }
-    ]
+        addressType: { type: String },
+      },
+    ],
   },
   { timestamps: true }
 );
