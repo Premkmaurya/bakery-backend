@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema(
         phone: { type: String },
         street: { type: String },
         city: { type: String },
+        zip: { type: Number },
         addressType: { type: String },
       },
     ],
