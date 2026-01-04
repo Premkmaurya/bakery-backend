@@ -36,9 +36,7 @@ async function searchProducts(req, res) {
   }
 
   try {
-    const products = await productModel
-      .find(filter)
-      .sort({ createdAt: -1 });
+    const products = await productModel.find(filter).sort({ createdAt: -1 });
     return res.status(200).json(products);
   } catch (error) {
     return res.status(500).json({ message: "Error fetching products", error });
@@ -51,13 +49,14 @@ async function createProduct(req, res) {
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
     const image = req.file;
-    const { name, price, description, category, inStock } = req.body;
+    const { name, price, description, details, category, inStock } = req.body;
     const result = await uploadImage(image.buffer, `${uuidv4()}`);
 
     const newProduct = new productModel({
       name,
       price,
       description,
+      details,
       category,
       imageUrl: result.url,
       inStock,
@@ -123,10 +122,40 @@ async function deleteProduct(req, res) {
   }
 }
 
+async function getRelatedProducts(req, res) {
+  try {
+    const { id } = req.params;
+
+    const product = await productModel.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // 2️⃣ Find related products (same category)
+    const relatedProducts = await productModel.find({
+      _id: { $ne: product._id },        // exclude current product
+      category: product.category,       // same category
+      inStock: true
+    })
+    .limit(6)
+    .sort({ createdAt: -1 });
+
+    return res.status(200).json(relatedProducts);
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error fetching related products",
+      error: error.message
+    });
+  }
+}
+
+
 module.exports = {
   getProducts,
   searchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
+  getRelatedProducts
 };

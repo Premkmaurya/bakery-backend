@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    details:{
+      type:String,
+      trim:true
+    },
     category: {
       type: String,
       required: true,
@@ -33,6 +37,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isFeatured:{
+      type:Boolean,
+      default:false
+    },
     inStock: {
       type: Boolean,
       default: true,
@@ -45,7 +53,7 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-productSchema.index({ name: "text", description: "text", category: "text", price:"number" });
+productSchema.index({ name: "text", details: "text",});
 
 const productModel = mongoose.model("product", productSchema);
 

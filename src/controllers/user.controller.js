@@ -76,7 +76,7 @@ const updateAddress = async (req, res) => {
   // Implementation for updating an address can be added here
   const userId = req.user.id;
   const { addressId } = req.params;
-  const { fullName, phone, city, street, state, country, addressType, zip } = req.body;
+  const { fullName, phone, city, street, addressType, zip } = req.body;
   try {
     const user = await userModel.findById(userId);
     const address = user.address.id(addressId);
@@ -85,8 +85,6 @@ const updateAddress = async (req, res) => {
       phone,
       city,
       street,
-      state,
-      country,
       addressType,
       zip
     });

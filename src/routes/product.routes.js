@@ -11,6 +11,9 @@ router.get("/get",productController.getProducts);
 
 router.get("/search",productController.searchProducts);
 
+router.get("/:id/related", productController.getRelatedProducts);
+
+
 router.post(
   "/create",
   authMiddleware,
