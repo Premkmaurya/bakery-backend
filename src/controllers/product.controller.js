@@ -85,8 +85,18 @@ async function updateProduct(req, res) {
       const result = await uploadImage(image.buffer, `${uuidv4()}`);
       imageUrl = result.url;
     }
-    const { name, price, description, category, inStock } = req.body;
-    const updates = { name, price, description, category, inStock, imageUrl };
+    const { name, price, description, category, details, inStock, isFeatured } =
+      req.body;
+    const updates = {
+      name,
+      price,
+      description,
+      category,
+      inStock,
+      details,
+      isFeatured,
+      imageUrl,
+    };
     const updatedProduct = await productModel.findByIdAndUpdate(id, updates, {
       new: true,
     });
@@ -132,24 +142,23 @@ async function getRelatedProducts(req, res) {
     }
 
     // 2️⃣ Find related products (same category)
-    const relatedProducts = await productModel.find({
-      _id: { $ne: product._id },        // exclude current product
-      category: product.category,       // same category
-      inStock: true
-    })
-    .limit(6)
-    .sort({ createdAt: -1 });
+    const relatedProducts = await productModel
+      .find({
+        _id: { $ne: product._id }, // exclude current product
+        category: product.category, // same category
+        inStock: true,
+      })
+      .limit(6)
+      .sort({ createdAt: -1 });
 
     return res.status(200).json(relatedProducts);
-
   } catch (error) {
     return res.status(500).json({
       message: "Error fetching related products",
-      error: error.message
+      error: error.message,
     });
   }
 }
-
 
 module.exports = {
   getProducts,
@@ -157,5 +166,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
-  getRelatedProducts
+  getRelatedProducts,
 };
