@@ -34,14 +34,13 @@ async function updateOrderStatus(req, res) {
     const { status } = req.body;
 
     if (
-        req.user.role !== "admin" &&
+      req.user.role !== "admin" &&
       (status === "shipped" || status === "delivered")
     ) {
       return res
         .status(403)
         .json({ error: "Only admins can update order status" });
     }
-
 
     const updatedOrder = await orderModel.findByIdAndUpdate(
       orderId,
@@ -54,8 +53,21 @@ async function updateOrderStatus(req, res) {
   }
 }
 
+async function deleteOrder(req, res) {
+  const { orderId } = req.params;
+  try {
+    const response = await orderModel.findByIdAndDelete({ _id:orderId });
+    res.status(201).json({
+      message: "product deleted successfully.",
+    });
+  } catch (err) {
+    throw new Error("Error deleting order: " + err.message);
+  }
+}
+
 module.exports = {
   getOrders,
   createOrder,
   updateOrderStatus,
+  deleteOrder,
 };

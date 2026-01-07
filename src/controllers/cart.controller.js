@@ -45,11 +45,9 @@ async function updateCart(req, res) {
     if (!cart) {
       return res.status(404).json("Nothing found in the cart.");
     }
-    console.log(cart.items);
     const existingItemIndex = cart.items.findIndex(
       (item) => item._id.toString() === id
     );
-    console.log(existingItemIndex);
     if (existingItemIndex > -1) {
       cart.items[existingItemIndex].quantity = quantity;
     }

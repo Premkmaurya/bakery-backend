@@ -19,4 +19,10 @@ router.patch(
   orderController.updateOrderStatus
 );
 
+router.delete(
+  "/deleteOrder/:orderId",
+  authMiddleware,
+  orderController.deleteOrder
+)
+
 module.exports = router;
