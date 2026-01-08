@@ -29,6 +29,8 @@ const userRegister = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure:true,
+      sameSite:"none"
     });
     res.status(201).json({
       message: "User registered successfully",
@@ -60,6 +62,8 @@ const userLogin = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure:true,
+      sameSite:"none"
     });
     res.status(200).json({
       message: "Login successful",
@@ -118,8 +122,10 @@ const googleAuthCallback = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
+      secure: true,
+      sameSite: "none",
     });
-    res.redirect("http://localhost:5173");
+    res.redirect("https://rohitgiftshop.netlify.app");
   } catch (error) {
     return res
       .status(500)
