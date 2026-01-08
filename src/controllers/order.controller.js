@@ -5,7 +5,8 @@ async function getOrders(req, res) {
     const order = await orderModel
       .find({ userId: req.user.id })
       .populate("productId")
-      .populate("userId");
+      .populate("userId")
+      .sort({ createdAt: -1 });
     res.status(200).json(order);
   } catch (error) {
     throw new Error("Error fetching order by ID: " + error.message);
@@ -22,7 +23,8 @@ async function createOrder(req, res) {
       userId: req.user.id,
     });
     const savedOrder = await newOrder.save();
-    res.status(201).json(savedOrder);
+    const populateOrder = await savedOrder.populate("productId");
+    res.status(201).json(populateOrder);
   } catch (error) {
     throw new Error("Error creating order: " + error.message);
   }
@@ -56,7 +58,7 @@ async function updateOrderStatus(req, res) {
 async function deleteOrder(req, res) {
   const { orderId } = req.params;
   try {
-    const response = await orderModel.findByIdAndDelete({ _id:orderId });
+    const response = await orderModel.findByIdAndDelete({ _id: orderId });
     res.status(201).json({
       message: "product deleted successfully.",
     });
