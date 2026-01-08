@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cookiesParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://rohitgiftshop.netlify.app"],
     credentials: true,
   })
 );
@@ -36,7 +36,6 @@ passport.use(
     }
   )
 );
-
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
