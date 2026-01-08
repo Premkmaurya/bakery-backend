@@ -28,7 +28,6 @@ const userRegister = async (req, res) => {
     await newUser.save();
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     res.status(201).json({
@@ -60,7 +59,6 @@ const userLogin = async (req, res) => {
     );
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     res.status(200).json({
@@ -77,7 +75,6 @@ const userLogin = async (req, res) => {
 const userLogout = async (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
   });
   res.status(200).json({ message: "Logout successful" });
 };
@@ -120,7 +117,6 @@ const googleAuthCallback = async (req, res) => {
     );
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     res.redirect("http://localhost:5173");
