@@ -4,5 +4,6 @@ const connectDB = require('./src/db/db');
 
 connectDB();
 
-
-module.exports = app;
+app.listen(3000,()=>{
+  console.log("server is listening at port 3000.)
+    })
