@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const uploadImage = require("../services/storage.service");
 
 const userRegister = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
