@@ -1,7 +1,6 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const uploadImage = require("../services/storage.service");
 
 const userRegister = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -29,7 +28,7 @@ const userRegister = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       secure:true,
-      sameSite:"none"
+      sameSite:"lax"
     });
     res.status(201).json({
       message: "User registered successfully",
@@ -62,7 +61,7 @@ const userLogin = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       secure:true,
-      sameSite:"none"
+      sameSite:"lax"
     });
     res.status(200).json({
       message: "Login successful",
@@ -122,7 +121,7 @@ const googleAuthCallback = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       secure: true,
-      sameSite: "none",
+      sameSite: "lax",
     });
     res.redirect("https://rohitgiftshop.netlify.app");
   } catch (error) {
