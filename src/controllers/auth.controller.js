@@ -123,7 +123,7 @@ const googleAuthCallback = async (req, res) => {
       secure: true,
       sameSite: "none",
     });
-    res.redirect("https://rohitgiftshop.netlify.app");
+    res.redirect("https://bakery-frontend-two.vercel.app");
   } catch (error) {
     return res
       .status(500)
