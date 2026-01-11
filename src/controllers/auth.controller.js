@@ -27,14 +27,15 @@ const userRegister = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
-      secure:true,
-      sameSite:"none"
+      secure: true,
+      sameSite: "none",
     });
     res.status(201).json({
       message: "User registered successfully",
       email: newUser.email,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
+      role: newUser.role,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -60,14 +61,15 @@ const userLogin = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
-      secure:true,
-      sameSite:"none"
+      secure: true,
+      sameSite: "none",
     });
     res.status(200).json({
       message: "Login successful",
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: user.role,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -113,13 +115,13 @@ const googleAuthCallback = async (req, res) => {
       userData = isUserExists;
     }
     const token = jwt.sign(
-      { id: userData._id, email: userData.email },
+      { id: userData._id, email: userData.email, role: userData.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      maxAge: 24 * 60 * 60 * 1000,
       secure: true,
       sameSite: "none",
     });
@@ -130,8 +132,6 @@ const googleAuthCallback = async (req, res) => {
       .json({ message: "Google authentication failed", error });
   }
 };
-
-
 
 module.exports = {
   userRegister,

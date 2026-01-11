@@ -27,6 +27,7 @@ const updateUserProfile = async (req, res) => {
         phone: updatedUser.phone,
         gender: updatedUser.gender,
         avatar: avatarUrl || updatedUser.avatar,
+        role: req.user.role,
       },
     });
   } catch (error) {
@@ -50,8 +51,8 @@ const getAddress = async (req, res) => {
 const addAddress = async (req, res) => {
   try {
     const userId = req.user.id;
-    const {fullName,phone,city,street,state,addressType,zip} = req.body;
-    
+    const { fullName, phone, city, street, state, addressType, zip } = req.body;
+
     const user = await userModel.findById(userId);
     user.address.push({
       fullName,
@@ -60,7 +61,7 @@ const addAddress = async (req, res) => {
       street,
       state,
       addressType,
-      zip
+      zip,
     });
     await user.save();
     res.status(200).json({
@@ -86,7 +87,7 @@ const updateAddress = async (req, res) => {
       city,
       street,
       addressType,
-      zip
+      zip,
     });
     await user.save();
     res.status(200).json({
@@ -95,30 +96,6 @@ const updateAddress = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
-  }
-};
-
-const deleteAddress = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { id } = req.params;
-    
-    const user = await userModel.findByIdAndUpdate(
-      userId,
-      { $pull: { address: { _id: id } } },
-      { new: true }
-    );
-    
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    
-    res.status(200).json({
-      message: "Address deleted successfully",
-      addresses: user.address,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -139,12 +116,34 @@ const updatePassword = async (req, res) => {
     user.password = hash;
     await user.save();
     res.status(200).json({ message: "Password updated successfully" });
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
-}
+};
 
+const deleteAddress = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { id } = req.params;
+
+    const user = await userModel.findByIdAndUpdate(
+      userId,
+      { $pull: { address: { _id: id } } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "Address deleted successfully",
+      addresses: user.address,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 module.exports = {
   updateUserProfile,
@@ -152,5 +151,5 @@ module.exports = {
   addAddress,
   updateAddress,
   deleteAddress,
-  updatePassword
+  updatePassword,
 };

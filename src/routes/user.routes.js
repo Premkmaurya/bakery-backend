@@ -32,16 +32,18 @@ router.patch(
   userController.updateAddress
 )
 
+router.patch(
+  "/update-password",
+  authMiddleware,
+  userController.updatePassword
+)
+
+
 router.delete(
   "/delete-address/:id",
   authMiddleware,
   userController.deleteAddress
 );
 
-router.patch(
-  "/update-password",
-  authMiddleware,
-  userController.updatePassword
-)
 
 module.exports = router;
