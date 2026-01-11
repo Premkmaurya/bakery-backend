@@ -25,6 +25,9 @@ app.use(
   })
 );
 
+app.set("trust proxy", 1);
+
+
 app.use(passport.initialize());
 passport.use(
   new GoogleStrategy(
@@ -38,6 +41,7 @@ passport.use(
     }
   )
 );
+
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
