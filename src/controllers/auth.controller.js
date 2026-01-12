@@ -119,13 +119,10 @@ const googleAuthCallback = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      secure: true,
-      sameSite: "none",
-    });
-    res.redirect("https://bakery-frontend-two.vercel.app");
+
+    res.redirect(
+      `https://bakery-frontend-two.vercel.app/oauth-success?token=${token}`
+    );
   } catch (error) {
     return res
       .status(500)
@@ -133,10 +130,26 @@ const googleAuthCallback = async (req, res) => {
   }
 };
 
+const setAuthCookie = (req, res) => {
+  const { token } = req.body;
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
+  res.json({ success: true });
+};
+
+
 module.exports = {
   userRegister,
   userLogin,
   userLogout,
   verifyUser,
   googleAuthCallback,
+  setAuthCookie,
 };

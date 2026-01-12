@@ -26,5 +26,6 @@ router.get(
   authController.googleAuthCallback
 );
 
+router.post("/set-cookie", authController.setAuthCookie);
 
 module.exports = router;
