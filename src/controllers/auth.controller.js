@@ -115,7 +115,13 @@ const googleAuthCallback = async (req, res) => {
       userData = isUserExists;
     }
     const token = jwt.sign(
-      { id: userData._id, email: userData.email, role: userData.role },
+      {
+        id: userData._id,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        role: userData.role,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
@@ -142,7 +148,6 @@ const setAuthCookie = (req, res) => {
 
   res.json({ success: true });
 };
-
 
 module.exports = {
   userRegister,
