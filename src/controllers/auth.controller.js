@@ -29,6 +29,7 @@ const userRegister = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       secure: true,
       sameSite: "none",
+      path: "/",
     });
     res.status(201).json({
       message: "User registered successfully",
@@ -63,6 +64,7 @@ const userLogin = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       secure: true,
       sameSite: "none",
+      path: "/",
     });
     res.status(200).json({
       message: "Login successful",
@@ -148,6 +150,7 @@ const setAuthCookie = (req, res) => {
     secure: true,
     sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000,
+    path: "/",
   });
 
   res.json({ success: true });
