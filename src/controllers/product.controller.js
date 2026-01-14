@@ -4,14 +4,44 @@ const { v4: uuidv4 } = require("uuid");
 
 async function getProducts(req, res) {
   try {
-    const products = await productModel.find({}).skip(0).limit(10);
-    res.status(200).json(products);
+    const { isFeatured, category } = req.query;
+    console.log("Query Params:", req.query);
+
+    // If NO query params → return all products
+    if (!isFeatured && !category) {
+      const products = await productModel
+        .find()
+        .limit(12)
+        .sort({ createdAt: -1 });
+
+      return res.status(200).json(products);
+    }
+
+    // Build filter only when query exists
+    const filter = {};
+
+    if (isFeatured !== undefined) {
+      filter.isFeatured = isFeatured === "true";
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    const products = await productModel
+      .find(filter)
+      .limit(5)
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(products);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching products", error: error.message });
+    return res.status(500).json({
+      message: "Error fetching products",
+      error: error.message,
+    });
   }
 }
+
 
 async function searchProducts(req, res) {
   const { search, category, maxPrice } = req.query;
