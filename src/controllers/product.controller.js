@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require("uuid");
 async function getProducts(req, res) {
   try {
     const { isFeatured, category } = req.query;
-    console.log("Query Params:", req.query);
 
     // If NO query params → return all products
     if (!isFeatured && !category) {

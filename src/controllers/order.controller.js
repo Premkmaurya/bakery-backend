@@ -13,6 +13,25 @@ async function getOrders(req, res) {
   }
 }
 
+async function getAllOrders(req, res) {
+  try {
+    if (req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ error: "Only admins can access all orders" });
+    }
+    const orders = await orderModel
+      .find()
+      .limit(10)
+      .populate("productId")
+      .populate("userId")
+      .sort({ createdAt: -1 });
+    res.status(200).json(orders);
+  } catch (error) {
+    throw new Error("Error fetching all orders: " + error.message);
+  }
+}
+
 async function createOrder(req, res) {
   try {
     const { productId, quantity, status } = req.body;
@@ -69,6 +88,7 @@ async function deleteOrder(req, res) {
 
 module.exports = {
   getOrders,
+  getAllOrders,
   createOrder,
   updateOrderStatus,
   deleteOrder,

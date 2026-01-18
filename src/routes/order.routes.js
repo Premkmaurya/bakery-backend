@@ -8,6 +8,11 @@ router.get(
     authMiddleware, 
     orderController.getOrders
 );
+router.get(
+  "/admin/getAllOrders",
+  authMiddleware,
+  orderController.getAllOrders
+)
 router.post(
     "/createOrder", 
     authMiddleware, 

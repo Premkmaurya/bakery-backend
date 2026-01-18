@@ -17,11 +17,17 @@ const userRegister = async (req, res) => {
       password: hash,
     });
     const token = jwt.sign(
-      { id: newUser._id, email: newUser.email },
+      {
+        id: newUser._id,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        role: newUser.role,
+      },
       process.env.JWT_SECRET,
       {
         expiresIn: "1d",
-      }
+      },
     );
     await newUser.save();
     res.cookie("token", token, {
@@ -50,14 +56,20 @@ const userLogin = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    const decoded = await bcrypt.compare(password, user.password);
+    const decoded = bcrypt.compare(password, user.password);
     if (!decoded) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      {
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
     res.cookie("token", token, {
       httpOnly: true,
@@ -71,7 +83,7 @@ const userLogin = async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      role: user.role,
+      role:user.role,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -129,11 +141,11 @@ const googleAuthCallback = async (req, res) => {
         role: userData.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
 
     res.redirect(
-      `https://bakery-frontend-two.vercel.app/oauth-success?token=${token}`
+      `https://bakery-frontend-two.vercel.app/oauth-success?token=${token}`,
     );
   } catch (error) {
     return res
