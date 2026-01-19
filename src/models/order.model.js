@@ -23,6 +23,14 @@ const orderSchema = new mongoose.Schema(
       required: true,
       enum: ["pending", "shipped", "delivered", "cancelled"],
       default: "pending"
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    total:{
+      type: Number,
+      required: true,
     }
   },
   { timestamps: true }

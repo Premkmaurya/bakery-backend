@@ -1,4 +1,5 @@
 const orderModel = require("../models/order.model");
+const { publishToQueue } = require("../broker/broker");
 
 async function getOrders(req, res) {
   try {
@@ -34,16 +35,31 @@ async function getAllOrders(req, res) {
 
 async function createOrder(req, res) {
   try {
-    const { productId, quantity, status } = req.body;
+    const { productId, quantity, status, address, total } = req.body;
     const newOrder = new orderModel({
       productId,
       quantity,
+      address,
+      total,
       status,
       userId: req.user.id,
     });
     const savedOrder = await newOrder.save();
-    const populateOrder = await savedOrder.populate("productId");
-    res.status(201).json(populateOrder);
+    const populatedOrder = await savedOrder.populate([
+      { path: "productId" },
+      { path: "userId" },
+    ]);
+    const findAddress = populatedOrder.userId.address.find(
+      (addr) => addr._id.toString() === address,
+    );
+    const user =
+      populatedOrder.userId.firstName + " " + populatedOrder.userId.lastName;
+    const data = {
+      findAddress,
+      user,
+    };
+    await publishToQueue("SELLER_ORDER_CREATED_NOTIFICATION", data);
+    res.status(201).json(populatedOrder);
   } catch (error) {
     throw new Error("Error creating order: " + error.message);
   }
@@ -53,7 +69,6 @@ async function updateOrderStatus(req, res) {
   try {
     const { orderId } = req.params;
     const { status } = req.body;
-
     if (
       req.user.role !== "admin" &&
       (status === "shipped" || status === "delivered")
@@ -66,8 +81,21 @@ async function updateOrderStatus(req, res) {
     const updatedOrder = await orderModel.findByIdAndUpdate(
       orderId,
       { status },
-      { new: true }
+      { new: true },
     );
+
+    if (status == "cancelled") {
+      const populatedOrder = await updatedOrder.populate("userId");
+      const data = {
+        orderId: updatedOrder._id,
+        user:
+          populatedOrder.userId.firstName +
+          " " +
+          populatedOrder.userId.lastName,
+      };
+      await publishToQueue("SELLER_ORDER_CANCEL_NOTIFICATION", data);
+    }
+
     res.status(200).json(updatedOrder);
   } catch (error) {
     throw new Error("Error updating order status: " + error.message);

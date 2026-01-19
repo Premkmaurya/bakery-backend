@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { publishToQueue } = require("../broker/broker");
 
 const userRegister = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -16,6 +17,14 @@ const userRegister = async (req, res) => {
       email,
       password: hash,
     });
+
+    await publishToQueue("AUTH_USER_REGISTER_NOTIFICATION", {
+      id: newUser._id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+    });
+
     const token = jwt.sign(
       {
         id: newUser._id,
@@ -83,7 +92,7 @@ const userLogin = async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      role:user.role,
+      role: user.role,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -126,6 +135,12 @@ const googleAuthCallback = async (req, res) => {
         firstName: user.name.givenName,
         lastName: user.name.familyName,
         email: user.emails[0].value,
+      });
+      await publishToQueue("AUTH_USER_REGISTER_NOTIFICATION", {
+        id: newUser._id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
       });
       await newUser.save();
       userData = newUser;
