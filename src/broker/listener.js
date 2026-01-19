@@ -98,10 +98,10 @@ module.exports = function () {
             display: inline-block;
             padding: 14px 30px;
             background-color: #b91c46;
-            color: #ffffff;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 400;
             border-radius: 50px;
+            color: #ffffff;
             font-size: 16px;
             transition: background-color 0.3s;
             margin-top: 10px;
@@ -175,7 +175,7 @@ module.exports = function () {
                         
                         <a href="https://bakery-frontend-two.vercel.app/login" class="btn">Visit My Account</a>
                         <br><br>
-                        <a href="https://bakery-frontend-two.vercel.app/products" style="color: #b91c46; font-size: 14px; text-decoration: underline;">Or start browsing cakes</a>
+                        <a href="https://bakery-frontend-two.vercel.app/products" style="color: #c23a5e; font-size: 14px; text-decoration: underline;">Or start browsing cakes</a>
                     </div>
 
                     <div class="footer">
