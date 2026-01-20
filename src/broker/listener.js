@@ -173,9 +173,9 @@ module.exports = function () {
 
                         <p>Ready to find something delicious?</p>
                         
-                        <a href="https://bakery-frontend-two.vercel.app/login" class="btn">Visit My Account</a>
+                        <a href="https://bakeverse.vercel.app/login" class="btn">Visit My Account</a>
                         <br><br>
-                        <a href="https://bakery-frontend-two.vercel.app/products" style="color: #c23a5e; font-size: 14px; text-decoration: underline;">Or start browsing cakes</a>
+                        <a href="https://bakeverse.vercel.app/products" style="color: #c23a5e; font-size: 14px; text-decoration: underline;">Or start browsing cakes</a>
                     </div>
 
                     <div class="footer">
@@ -377,7 +377,7 @@ module.exports = function () {
                             </div>
                         </div>
 
-                        <a href="https://bakery-frontend-two.vercel.app/profile" class="btn">View Full Order</a>
+                        <a href="https://bakeverse.vercel.app/profile" class="btn">View Full Order</a>
                         
                     </div>
 
@@ -568,7 +568,7 @@ module.exports = function () {
                             </div>
                         </div>
 
-                        <a href="https://bakery-frontend-two.vercel.app/profile" class="btn">View Order Details</a>
+                        <a href="https://bakeverse.vercel.app/profile" class="btn">View Order Details</a>
                         
                     </div>
 

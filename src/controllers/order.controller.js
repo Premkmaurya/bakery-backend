@@ -1,10 +1,9 @@
 const orderModel = require("../models/order.model");
 const { publishToQueue } = require("../broker/broker");
-const dayjs = require('dayjs')
+const dayjs = require("dayjs");
 
-const relativeTime = require('dayjs/plugin/relativeTime')
-dayjs.extend(relativeTime)
-
+const relativeTime = require("dayjs/plugin/relativeTime");
+dayjs.extend(relativeTime);
 
 async function getOrders(req, res) {
   try {
@@ -32,6 +31,8 @@ async function getAllOrders(req, res) {
       .populate("productId")
       .populate("userId")
       .sort({ createdAt: -1 });
+
+
     res.status(200).json(orders);
   } catch (error) {
     throw new Error("Error fetching all orders: " + error.message);
@@ -97,7 +98,7 @@ async function updateOrderStatus(req, res) {
           populatedOrder.userId.firstName +
           " " +
           populatedOrder.userId.lastName,
-          date: dayjs(populatedOrder.createdAt).fromNow(),
+        date: dayjs(populatedOrder.createdAt).fromNow(),
       };
       await publishToQueue("SELLER_ORDER_CANCEL_NOTIFICATION", data);
     }

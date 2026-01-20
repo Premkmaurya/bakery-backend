@@ -160,7 +160,7 @@ const googleAuthCallback = async (req, res) => {
     );
 
     res.redirect(
-      `https://bakery-frontend-two.vercel.app/oauth-success?token=${token}`,
+      `https://bakeverse.vercel.app/oauth-success?token=${token}`,
     );
   } catch (error) {
     return res
