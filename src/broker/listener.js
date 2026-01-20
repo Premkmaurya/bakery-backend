@@ -5,8 +5,8 @@ module.exports = function () {
   subscribeToQueue("AUTH_USER_REGISTER_NOTIFICATION", async (data) => {
     const htmlTemplate = `
         <!DOCTYPE html>
-<html lang="en">
-<head>
+        <html lang="en">
+        <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Cake Shop!</title>
@@ -138,8 +138,8 @@ module.exports = function () {
             .header h1 { font-size: 24px; }
         }
     </style>
-</head>
-<body>
+        </head>
+        <body>
 
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
         <tr>
@@ -197,8 +197,8 @@ module.exports = function () {
         </tr>
     </table>
 
-</body>
-</html>
+        </body>
+        </html>
     `;
     await sendEmail(
       data.email,
@@ -210,61 +210,194 @@ module.exports = function () {
 
   subscribeToQueue("SELLER_ORDER_CREATED_NOTIFICATION", async (data) => {
     const htmlTemplate = `
-    <!DOCTYPE html>
+        <!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Your Order Has Been Placed! 🚀</title>
-        <style>
-            body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-            table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        </style>
-    </head>
-    <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: Arial, sans-serif;">
-        <center>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
-                <tr>
-                    <td align="center" style="padding: 20px 0;">
-                        <table border="0" cellpadding="0" cellspacing="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-                            <tr>
-                                <td align="center" style="padding: 30px 20px 20px 20px; background-color: #007bff; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                                    <h1 style="margin: 0; font-size: 28px; color: #ffffff;">
-                                        Order Created Successfully!
-                                    </h1>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center" style="padding: 40px 40px 20px 40px; color: #333333;">
-                                    <p style="font-size: 18px; line-height: 24px; margin: 0;">
-                                        Hi ${data.user} order has been placed successfully.
-                                    </p>
-                                    <p style="font-size: 16px; line-height: 24px; margin: 20px 0 0 0;">
-                                        His phone number is <strong>${data.findAddress.phone || "N/A"}</strong> and address is <strong>${data.findAddress.street || "N/A"} ${data.findAddress.city || "N/A"} ${data.findAddress.zip || "N/A"} and his address type is ${data.findAddress.addressType || "N/A"} </strong>.
-                                    </p>
-                                </td>
-                            </tr>
-                                <td align="center" style="padding: 20px; font-size: 14px; line-height: 20px; color: #888888; border-top: 1px solid #eeeeee;">
-                                    <p style="margin: 0;">
-                                        Need help? Reply to this email or visit our <a href="${data.supportLink || "#"}" style="color: #007bff;">Support Center</a>.
-                                    </p>
-                                    <p style="margin: 10px 0 0 0;">
-                                        &copy; ${new Date().getFullYear()} services. All rights reserved.
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </center>
-    </body>
-    </html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Order Received</title>
+    <style>
+        /* General Resets */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #f4f4f4; font-family: 'Helvetica', 'Arial', sans-serif; }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        .header {
+            background-color: #333333; /* Darker header for Admin emails to distinguish from customer emails */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #b91c46; /* Brand accent line */
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+        }
+        .content h2 {
+            color: #b91c46;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .alert-text {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        /* Customer Details Box */
+        .details-box {
+            background-color: #f9f9f9;
+            border: 1px solid #eeeeee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .details-row {
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .details-row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            width: 40%;
+        }
+        .value {
+            color: #333;
+            width: 60%;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 14px 0;
+            background-color: #b91c46;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #9f163b;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #f4f4f4;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Mobile Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; }
+            .content { padding: 20px; }
+            .details-row { flex-direction: column; text-align: left; }
+            .value { text-align: left; width: 100%; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center" style="padding: 40px 0;">
+                
+                <div class="email-container">
+                    
+                    <div class="header">
+                        <h1>🔔 New Order Alert</h1>
+                    </div>
+
+                    <div class="content">
+                        
+                        <h2>Hello Admin,</h2>
+                        <p class="alert-text">You have received a new order on your website! Here are the delivery details provided by the customer.</p>
+
+                        <div class="details-box">
+                            <div class="details-row">
+                                <span class="label">Customer Name:</span>
+                                <span class="value">${data.user}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Phone Number:</span>
+                                <span class="value"><a href="tel:${data.findAddress.phone}" style="color:#333; text-decoration:none;">${data.findAddress.phone}</a></span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Address Type:</span>
+                                <span class="value" style="text-transform: capitalize; color: #b91c46;">${data.findAddress.addressType}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Street Address:</span>
+                                <span class="value">${data.findAddress.street}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">City:</span>
+                                <span class="value">${data.findAddress.city}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Zip Code:</span>
+                                <span class="value">${data.findAddress.zip}</span>
+                            </div>
+                        </div>
+
+                        <a href="https://bakery-frontend-two.vercel.app/profile" class="btn">View Full Order</a>
+                        
+                    </div>
+
+                    <div class="footer">
+                        <p>This is an automated notification from your Cake Shop System.</p>
+                    </div>
+
+                </div>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
     `;
     await sendEmail(
       process.env.EMAIL_USER,
-      "Welcome to Our Service",
-      "Your order successfully completed.",
+      "🔔 New Order Received!",
+      "You have received a new order.",
       htmlTemplate,
     );
   });
@@ -272,60 +405,185 @@ module.exports = function () {
   subscribeToQueue("SELLER_ORDER_CANCEL_NOTIFICATION", async (data) => {
     const htmlTemplate = `
     <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Order Cancelled Notification</title>
-        <style>
-            body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-            table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        </style>
-    </head>
-    <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: Arial, sans-serif;">
-        <center>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
-                <tr>
-                    <td align="center" style="padding: 20px 0;">
-                        <table border="0" cellpadding="0" cellspacing="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-                            <tr>
-                                <td align="center" style="padding: 30px 20px 20px 20px; background-color: #dc3545; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-                                    <h1 style="margin: 0; font-size: 28px; color: #ffffff;">
-                                        Order Cancelled
-                                    </h1>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center" style="padding: 40px 40px 20px 40px; color: #333333;">
-                                    <p style="font-size: 18px; line-height: 24px; margin: 0;">
-                                        Dear ${data.user},
-                                    </p>
-                                    <p style="font-size: 16px; line-height: 24px; margin: 20px 0 0 0;">
-                                        We regret to inform you that the order with ID <strong>${data.orderId}</strong> has been cancelled by the user.
-                                    </p>
-                                    <p style="font-size: 16px; line-height: 24px; margin: 20px 0 0 0;">
-                                        Please check your dashboard for more details.
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center" style="padding: 20px; font-size: 14px; line-height: 20px; color: #888888; border-top: 1px solid #eeeeee;">
-                                    <p style="margin: 0;">
-                                        Need help? Reply to this email or visit our <a href="${data.supportLink || "#"}" style="color: #007bff;">Support Center</a>.
-                                    </p>
-                                    <p style="margin: 10px 0 0 0;">
-                                        &copy; ${new Date().getFullYear()} services. All rights reserved.
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </center>
-    </body>
-    </html>
-    `;
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cancelled</title>
+    <style>
+        /* General Resets */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #f4f4f4; font-family: 'Helvetica', 'Arial', sans-serif; }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        .header {
+            background-color: #333333; /* Dark Admin Header */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #d32f2f; /* Red line for Cancellation/Alert */
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+        }
+        .content h2 {
+            color: #d32f2f; /* Red Text for emphasis */
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .alert-text {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        /* Cancellation Details Box */
+        .details-box {
+            background-color: #fff5f5; /* Light Red tint background */
+            border: 1px solid #ffcccc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .details-row {
+            padding: 10px 0;
+            border-bottom: 1px solid #ffdddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        .details-row:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            color: #d32f2f; /* Dark Red Label */
+            width: 40%;
+        }
+        .value {
+            color: #333;
+            width: 60%;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* Button */
+        .btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 14px 0;
+            background-color: #333333; /* Neutral Dark Button */
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #555555;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #f4f4f4;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Mobile Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container { width: 100% !important; }
+            .content { padding: 20px; }
+            .details-row { flex-direction: column; text-align: left; }
+            .value { text-align: left; width: 100%; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td align="center" style="padding: 40px 0;">
+                
+                <div class="email-container">
+                    
+                    <div class="header">
+                        <h1>🚫 Order Cancelled</h1>
+                    </div>
+
+                    <div class="content">
+                        
+                        <h2>Attention Admin,</h2>
+                        <p class="alert-text">An order has been cancelled by the customer. Please review the details below and update your inventory if necessary.</p>
+
+                        <div class="details-box">
+                            <div class="details-row">
+                                <span class="label">Order ID:</span>
+                                <span class="value">#
+                                ${data.orderId}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Customer Name:</span>
+                                <span class="value">${data.user}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Date:</span>
+                                <span class="value">${data.date}</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="label">Status:</span>
+                                <span class="value" style="color: #d32f2f; font-weight: bold;">Cancelled</span>
+                            </div>
+                        </div>
+
+                        <a href="https://bakery-frontend-two.vercel.app/profile" class="btn">View Order Details</a>
+                        
+                    </div>
+
+                    <div class="footer">
+                        <p>This is an automated system notification.</p>
+                    </div>
+
+                </div>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>`;
 
     await sendEmail(
       process.env.EMAIL_USER,

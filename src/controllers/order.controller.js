@@ -1,5 +1,10 @@
 const orderModel = require("../models/order.model");
 const { publishToQueue } = require("../broker/broker");
+const dayjs = require('dayjs')
+
+const relativeTime = require('dayjs/plugin/relativeTime')
+dayjs.extend(relativeTime)
+
 
 async function getOrders(req, res) {
   try {
@@ -92,6 +97,7 @@ async function updateOrderStatus(req, res) {
           populatedOrder.userId.firstName +
           " " +
           populatedOrder.userId.lastName,
+          date: dayjs(populatedOrder.createdAt).fromNow(),
       };
       await publishToQueue("SELLER_ORDER_CANCEL_NOTIFICATION", data);
     }
