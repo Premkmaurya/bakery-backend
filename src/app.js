@@ -10,6 +10,7 @@ const orderRoutes = require("./routes/order.routes");
 const cartRoutes = require("./routes/cart.routes");
 const reviewsRoutes = require("./routes/reviews.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 const cookiesParser = require("cookie-parser");
 const app = express();
@@ -50,5 +51,6 @@ app.use("/reviews", reviewsRoutes);
 app.use("/orders", orderRoutes);
 app.use("/cart", cartRoutes);
 app.use("/wishlist", wishlistRoutes);
+app.use("/payment", paymentRoutes);
 
 module.exports = app;
