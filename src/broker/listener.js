@@ -546,7 +546,7 @@ module.exports = function () {
                     <div class="content">
                         
                         <h2>Attention Admin,</h2>
-                        <p class="alert-text">An order has been cancelled by the customer. Please review the details below and update your inventory if necessary.</p>
+                        <p class="alert-text">An order has been cancelled. Please review the details below and update your inventory if necessary.</p>
 
                         <div class="details-box">
                             <div class="details-row">
