@@ -357,23 +357,23 @@ module.exports = function () {
                             </div>
                             <div class="details-row">
                                 <span class="label">Phone Number:</span>
-                                <span class="value"><a href="tel:${data.findAddress.phone}" style="color:#333; text-decoration:none;">${data.findAddress.phone}</a></span>
+                                <span class="value"><a href="tel:${data.findAddress?.phone || "N/A"}" style="color:#333; text-decoration:none;">${data.findAddress?.phone || "N/A"}</a></span>
                             </div>
                             <div class="details-row">
                                 <span class="label">Address Type:</span>
-                                <span class="value" style="text-transform: capitalize; color: #b91c46;">${data.findAddress.addressType}</span>
+                                <span class="value" style="text-transform: capitalize; color: #b91c46;">${data.findAddress?.addressType || "N/A"}</span>
                             </div>
                             <div class="details-row">
                                 <span class="label">Street Address:</span>
-                                <span class="value">${data.findAddress.street}</span>
+                                <span class="value">${data.findAddress?.street || "N/A"}</span>
                             </div>
                             <div class="details-row">
                                 <span class="label">City:</span>
-                                <span class="value">${data.findAddress.city}</span>
+                                <span class="value">${data.findAddress?.city || "N/A"}</span>
                             </div>
                             <div class="details-row">
                                 <span class="label">Zip Code:</span>
-                                <span class="value">${data.findAddress.zip}</span>
+                                <span class="value">${data.findAddress?.zip || "N/A"}</span>
                             </div>
                         </div>
 
