@@ -19,11 +19,12 @@ async function toggleWishlist(req, res) {
       wishlist = new wishlistModel({ userId: req.user.id, products: [] });
     }
 
+
     if (
       wishlist.products.some((item) => item.productId.toString() === productId)
     ) {
       wishlist.products = wishlist.products.filter(
-        (item) => item.productId.toString() !== productId
+        (item) => item.productId.toString() !== productId,
       );
       await wishlist.save();
       return res
@@ -37,6 +38,7 @@ async function toggleWishlist(req, res) {
     throw new Error("Error adding to wishlist: " + error.message);
   }
 }
+
 
 module.exports = {
   getWishlist,
